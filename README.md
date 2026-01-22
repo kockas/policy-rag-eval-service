@@ -21,3 +21,7 @@ and automated evaluation.
 
 ## Status
 🚧 Work in progress
+
+## HOWTO
+* Syncing the whole project: `uv sync`
+* Running the project: `uv run uvicorn policy_rag_eval.main:app --reload`
