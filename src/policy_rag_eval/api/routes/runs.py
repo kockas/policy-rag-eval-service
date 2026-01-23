@@ -1,27 +1,14 @@
-from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
-from enum import Enum
-from datetime import datetime
+from fastapi import APIRouter, Depends, HTTPException
+
+from policy_rag_eval.api.deps import run_store as get_run_store
+from policy_rag_eval.models.run import RunStatus
 
 router = APIRouter(prefix="/runs", tags=["runs"])
 
-class RunState(str, Enum):
-    PENDING = "pending"
-    RUNNING = "running"
-    SUCCEEDED = "succeeded"
-    FAILED = "failed"
-
-class RunStatus(BaseModel):
-    run_id: str
-    state: RunState
-    started_at: datetime
-    finished_at: datetime | None = None
-
-_RUNS: dict[str, RunStatus] = {}
 
 @router.get("/{run_id}", response_model=RunStatus)
-async def get_run(run_id: str):
-    run = _RUNS.get(run_id)
-    if not run:
+async def get_run(run_id: str, run_store=Depends(get_run_store)):
+    status = run_store.get(run_id)
+    if not status:
         raise HTTPException(status_code=404, detail="run not found")
-    return run
+    return status
