@@ -5,12 +5,13 @@ from dataclasses import dataclass
 
 from policy_rag_eval.models.run import RunState
 from policy_rag_eval.stores.runs import InMemoryRunStore, RunTaskRegistry
-
+from policy_rag_eval.stores.events import InMemoryEventStore
 
 @dataclass
 class AsyncRunner:
     run_store: InMemoryRunStore
     tasks: RunTaskRegistry
+    event_store: InMemoryEventStore
 
     async def _run(self, run_id: str, question: str) -> None:
         """
@@ -25,14 +26,17 @@ class AsyncRunner:
 
             # Mark success
             self.run_store.finish(run_id, RunState.SUCCEEDED)
+            self.event_store.append(run_id, "run_succeeded")
 
         except asyncio.CancelledError:
             # If we add cancellation endpoint later.
             self.run_store.finish(run_id, RunState.FAILED)
+            self.event_store.append(run_id, "run_failed", {"reason": "cancelled"})
             raise
 
         except Exception:
             self.run_store.finish(run_id, RunState.FAILED)
+            self.event_store.append(run_id, "run_failed", {"reason": "exception", "error": str(e)})
 
     def submit(self, run_id: str, question: str) -> None:
         """

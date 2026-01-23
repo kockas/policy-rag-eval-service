@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from uuid import uuid4
 
-from policy_rag_eval.api.deps import runner as get_runner, run_store as get_run_store
+from policy_rag_eval.api.deps import runner as get_runner, run_store as get_run_store, event_store as get_event_store
 from policy_rag_eval.models.query import QueryRequest, QueryResponse
 
 router = APIRouter(prefix="/query", tags=["query"])
@@ -11,9 +11,11 @@ async def query_policy(
     request: QueryRequest,
     run_store=Depends(get_run_store),
     runner=Depends(get_runner),
+    event_store=Depends(get_event_store),
 ):
     run_id = str(uuid4())
     run_store.create(run_id)
+    event_store.append(run_id, "run_created", {"top_k": request.top_k})
 
     # schedule background run
     runner.submit(run_id=run_id, question=request.question)
