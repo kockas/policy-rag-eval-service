@@ -10,6 +10,7 @@ class RunEvent(BaseModel):
     ts: datetime
     type: Literal[
         "run_created",
+        "retrieved",
         "run_started",
         "run_succeeded",
         "run_failed",

@@ -9,6 +9,8 @@ async def test_query_creates_run_and_eventually_succeeds(client):
     assert r.status_code == 200
     payload = r.json()
     assert payload["answer"] == "Queued"
+    assert payload["citations"]
+    assert payload["citations"][0]["source"] == "finma.txt"
     run_id = payload["run_id"]
     assert run_id
 

@@ -17,5 +17,6 @@ async def test_run_events_emitted(client):
 
     # order can be deterministic in our current design
     assert "run_created" in event_types
+    assert "retrieved" in event_types
     assert "run_started" in event_types
     assert "run_succeeded" in event_types

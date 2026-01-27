@@ -26,4 +26,12 @@ and automated evaluation.
 * Syncing the whole project: `uv sync`
 * Running the project: `uv run uvicorn policy_rag_eval.main:app --reload`
 * Running the tests: `uv run pytest`
-*
+
+## Retrieval source
+By default, the service performs live retrieval using FINMA's search API. You can control it via env vars:
+* `POLICY_RAG_EVAL_SOURCE=finma|local` (default: `finma`)
+* `POLICY_RAG_EVAL_DATA_DIR=...` (used when `local`)
+* `POLICY_RAG_EVAL_RETRIEVAL_TTL_SEC=...` (default: `900`, set to `0` for always-live)
+* `FINMA_SEARCH_URL=...` (override FINMA search endpoint)
+* `FINMA_SEARCH_SOURCE_ID=...` (override FINMA search data source id)
+* `FINMA_SEARCH_ORDER=...` (override FINMA search order; default `4`)
