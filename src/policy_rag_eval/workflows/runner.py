@@ -35,7 +35,7 @@ class AsyncRunner:
             self.event_store.append(run_id, "run_failed", {"reason": "cancelled"})
             raise
 
-        except Exception:
+        except Exception as e:
             self.run_store.finish(run_id, RunState.FAILED)
             self.event_store.append(run_id, "run_failed", {"reason": "exception", "error": str(e)})
 
