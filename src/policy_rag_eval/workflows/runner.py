@@ -19,6 +19,7 @@ class AsyncRunner:
         Later this becomes: ingest/retrieve/generate/eval pipeline.
         """
         self.run_store.set_state(run_id, RunState.RUNNING)
+        self.event_store.append(run_id, "run_started", {"question": question})
 
         try:
             # Simulate I/O-bound work. Replace with real RAG later.
