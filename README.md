@@ -1,14 +1,12 @@
 # policy-rag-eval-service
 
-A FastAPI-based service for retrieval-augmented question answering over
-public regulatory and policy documents, with async execution, tracing,
-and automated evaluation.
+A FastAPI-based service for learning retrieval-augmented question answering
+with local datasets, async execution, and run/event tracking.
 
-## Features
-- Async RAG execution
-- Public-policy document ingestion
-- Run tracking and observability
-- Evaluation with RAG metrics and LLM-as-judge
+## Features (current)
+- Async request handling with run/event tracking
+- Local document ingestion and simple retrieval
+- Placeholder async workflow runner
 
 ## Tech Stack
 - Python 3.11+
@@ -16,22 +14,23 @@ and automated evaluation.
 - asyncio
 - Pydantic
 - pytest
-- LangSmith (planned)
-- Ragas / DeepEval (planned)
+- LangGraph (learning target)
 
 ## Status
-🚧 Work in progress
+🚧 Work in progress — currently a minimal skeleton for experimenting with local RAG.
 
 ## HOWTO
-* Syncing the whole project: `uv sync`
+* Syncing the whole project: `uv sync --dev`
 * Running the project: `uv run uvicorn policy_rag_eval.main:app --reload`
 * Running the tests: `uv run pytest`
 
 ## Retrieval source
-By default, the service performs live retrieval using FINMA's search API. You can control it via env vars:
-* `POLICY_RAG_EVAL_SOURCE=finma|local` (default: `finma`)
-* `POLICY_RAG_EVAL_DATA_DIR=...` (used when `local`)
+By default, the service loads local documents from `data/processed` or `data/raw`.
+You can control it via env vars:
+* `POLICY_RAG_EVAL_DATA_DIR=...`
 * `POLICY_RAG_EVAL_RETRIEVAL_TTL_SEC=...` (default: `900`, set to `0` for always-live)
-* `FINMA_SEARCH_URL=...` (override FINMA search endpoint)
-* `FINMA_SEARCH_SOURCE_ID=...` (override FINMA search data source id)
-* `FINMA_SEARCH_ORDER=...` (override FINMA search order; default `4`)
+
+## Learning target
+This repo is intended for learning RAG + LangGraph using a local subset of HotpotQA.
+Download HotpotQA from: https://hotpotqa.github.io/ and place a small subset locally
+(do not commit large datasets to git).

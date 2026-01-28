@@ -15,8 +15,11 @@ def utcnow() -> datetime:
 @dataclass
 class InMemoryRunStore:
     """
-    Simple in-memory store.
-    Good for Milestone 2; later replaced by SQLite.
+    Simple in-memory store for run/process instances.
+
+    Think of a "run" as a single workflow/process instance started by an API request.
+    The store keeps a snapshot of the current state (pending/running/succeeded/failed),
+    timestamps, and any artifacts (e.g., retrieved citations).
     """
     _runs: Dict[str, RunStatus]
     _artifacts: Dict[str, Dict[str, Any]]
@@ -52,7 +55,10 @@ class InMemoryRunStore:
 @dataclass
 class RunTaskRegistry:
     """
-    Tracks asyncio Tasks so we can cancel runs later.
+    Maps run_id -> asyncio.Task.
+
+    A run_id identifies a process instance; the Task is the live execution handle
+    for that instance. Keep this only if you want to cancel/monitor running jobs.
     """
     _tasks: Dict[str, asyncio.Task]
 

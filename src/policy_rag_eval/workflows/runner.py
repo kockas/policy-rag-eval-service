@@ -43,6 +43,9 @@ class AsyncRunner:
         """
         Schedule the coroutine on the running event loop.
         FastAPI/uvicorn already run an event loop.
+
+        run_id is the process instance identifier; the created asyncio.Task is
+        the live execution handle for that instance (stored in RunTaskRegistry).
         """
         task = asyncio.create_task(self._run(run_id=run_id, question=question))
         self.tasks.put(run_id, task)
