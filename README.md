@@ -1,23 +1,22 @@
 # policy-rag-eval-service
 
 A FastAPI-based service for learning retrieval-augmented question answering
-with local datasets, async execution, and run/event tracking.
+with local datasets and LangGraph orchestration.
 
 ## Features (current)
-- Async request handling with run/event tracking
-- Local document ingestion and simple retrieval
-- Placeholder async workflow runner
+- LangGraph multi-hop workflow
+- Local HotpotQA ingestion (dev distractor)
+- Simple keyword-overlap retrieval
 
 ## Tech Stack
 - Python 3.11+
 - FastAPI
-- asyncio
 - Pydantic
 - pytest
 - LangGraph (learning target)
 
 ## Status
-🚧 Work in progress — currently a minimal skeleton for experimenting with local RAG.
+🚧 Work in progress — experimenting with HotpotQA-driven RAG.
 
 ## HOWTO
 * Syncing the whole project: `uv sync --dev`
@@ -25,10 +24,13 @@ with local datasets, async execution, and run/event tracking.
 * Running the tests: `uv run pytest`
 
 ## Retrieval source
-By default, the service loads local documents from `data/processed` or `data/raw`.
-You can control it via env vars:
-* `POLICY_RAG_EVAL_DATA_DIR=...`
+By default, the service loads HotpotQA from:
+`data/raw/hotpotqa/hotpot_dev_distractor_v1.json`
+
+Override with env vars:
+* `POLICY_RAG_EVAL_HOTPOT_PATH=...`
 * `POLICY_RAG_EVAL_RETRIEVAL_TTL_SEC=...` (default: `900`, set to `0` for always-live)
+* `POLICY_RAG_EVAL_DATA_DIR=...` (fallback for local .txt/.md files when HotpotQA is not present)
 
 ## Learning target
 This repo is intended for learning RAG + LangGraph using a local subset of HotpotQA.

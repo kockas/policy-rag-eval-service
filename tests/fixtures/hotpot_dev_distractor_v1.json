@@ -1,0 +1,24 @@
+[
+  {
+    "_id": "hp1",
+    "question": "Which actress from Friends starred in Cougar Town?",
+    "context": [
+      [
+        "Cougar Town",
+        [
+          "Cougar Town is an American television sitcom that stars Courteney Cox as Jules Cobb."
+        ]
+      ],
+      [
+        "Friends",
+        [
+          "Friends is an American sitcom starring Jennifer Aniston, Courteney Cox, Lisa Kudrow, Matt LeBlanc, Matthew Perry, and David Schwimmer."
+        ]
+      ]
+    ],
+    "supporting_facts": [
+      ["Cougar Town", 0],
+      ["Friends", 0]
+    ]
+  }
+]

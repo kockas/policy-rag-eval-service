@@ -1,32 +1,19 @@
-from __future__ import annotations
-
 from functools import lru_cache
+import os
 
-from policy_rag_eval.stores.events import InMemoryEventStore
-from policy_rag_eval.stores.runs import InMemoryRunStore, RunTaskRegistry
-from policy_rag_eval.workflows.runner import AsyncRunner
-from policy_rag_eval.retrieval.cache import get_chunks
+from fastapi import Depends, HTTPException
 
-
-@lru_cache
-def run_store() -> InMemoryRunStore:
-    return InMemoryRunStore()
+from policy_rag_eval.config import Settings, load_settings
+from policy_rag_eval.llm.openai import OpenAIClient
 
 
 @lru_cache
-def run_tasks() -> RunTaskRegistry:
-    return RunTaskRegistry()
+def get_settings() -> Settings:
+    return load_settings()
 
 
-@lru_cache
-def runner() -> AsyncRunner:
-    return AsyncRunner(run_store=run_store(), tasks=run_tasks(), event_store=event_store())
-
-
-@lru_cache
-def event_store() -> InMemoryEventStore:
-    return InMemoryEventStore()
-
-
-def retrieval_chunks():
-    return get_chunks()
+def get_llm(settings: Settings = Depends(get_settings)):
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise HTTPException(status_code=500, detail="OPENAI_API_KEY is not set")
+    return OpenAIClient(api_key=api_key, model=settings.openai_model)

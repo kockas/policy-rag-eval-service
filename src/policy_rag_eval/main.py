@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 import logging
-from policy_rag_eval.api.routes import health, query, runs
+from policy_rag_eval.api.routes import health, query
 
 logging.basicConfig(
     level=logging.INFO,
@@ -11,4 +11,3 @@ app = FastAPI(title="Policy RAG Eval Service")
 
 app.include_router(health.router)
 app.include_router(query.router)
-app.include_router(runs.router)

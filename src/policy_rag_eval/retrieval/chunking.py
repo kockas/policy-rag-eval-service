@@ -1,9 +1,7 @@
-from __future__ import annotations
-
 import re
 from typing import Iterable, List
 
-from policy_rag_eval.retrieval.types import Chunk, Document
+from policy_rag_eval.retrieval.model.types import Chunk, Document
 
 
 def chunk_text(text: str, max_chars: int = 800, overlap: int = 100) -> List[tuple[int, int, str]]:

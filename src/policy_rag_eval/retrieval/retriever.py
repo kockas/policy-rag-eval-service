@@ -1,9 +1,7 @@
-from __future__ import annotations
-
 import re
 from typing import Iterable, List
 
-from policy_rag_eval.retrieval.types import Chunk, RetrievalResult
+from policy_rag_eval.retrieval.model.types import Chunk, RetrievalResult
 
 
 def _tokenize(text: str) -> set[str]:
