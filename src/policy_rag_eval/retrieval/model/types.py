@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from torch import Tensor
+
 
 @dataclass(frozen=True)
 class Document:
@@ -23,4 +25,4 @@ class Chunk:
 @dataclass(frozen=True)
 class RetrievalResult:
     chunk: Chunk
-    score: int
+    score: float

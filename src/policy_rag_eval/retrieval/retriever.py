@@ -1,24 +1,24 @@
-import re
-from typing import Iterable, List
+from typing import List
+
+import torch
+from sentence_transformers import SentenceTransformer
+from torch import Tensor
+import logging
 
 from policy_rag_eval.retrieval.model.types import Chunk, RetrievalResult
 
+logger = logging.getLogger(__name__)
 
-def _tokenize(text: str) -> set[str]:
-    return {t.lower() for t in re.findall(r"[A-Za-z0-9]+", text)}
+model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2", device="mps")
 
-
-def retrieve(chunks: Iterable[Chunk], question: str, top_k: int) -> List[RetrievalResult]:
-    q_tokens = _tokenize(question)
-    if not q_tokens:
+def retrieve(chunks: tuple[Tensor, list[Chunk]], question: str, top_k: int) -> List[RetrievalResult]:
+    q_tensor = model.encode(question, normalize_embeddings=True, convert_to_tensor=True)
+    if q_tensor is None or q_tensor.numel() == 0:
         return []
 
-    scored: List[RetrievalResult] = []
-    for chunk in chunks:
-        c_tokens = _tokenize(chunk.text)
-        score = len(q_tokens & c_tokens)
-        if score > 0:
-            scored.append(RetrievalResult(chunk=chunk, score=score))
+    emb, chunk_list = chunks
+    scores = emb @ q_tensor
+    top_idx = torch.topk(scores, k=top_k).indices
 
-    scored.sort(key=lambda r: (-r.score, r.chunk.doc_id, r.chunk.chunk_id))
-    return scored[:top_k]
+    scored: List[RetrievalResult] = [RetrievalResult(chunk=chunk_list[i], score=float(scores[i])) for i in top_idx]
+    return scored

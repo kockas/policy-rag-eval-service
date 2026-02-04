@@ -1,8 +1,15 @@
 import re
 from typing import Iterable, List
+import logging
+
+import torch
+from torch import Tensor
 
 from policy_rag_eval.retrieval.loaders import load_documents
 from policy_rag_eval.retrieval.model.types import Chunk, Document
+from policy_rag_eval.retrieval.retriever import model
+
+logger = logging.getLogger(__name__)
 
 def chunk_text(text: str, max_chars: int = 800, overlap: int = 100) -> List[tuple[int, int, str]]:
     # Split on blank lines first for readability.
@@ -39,12 +46,13 @@ def chunk_text(text: str, max_chars: int = 800, overlap: int = 100) -> List[tupl
     return chunks
 
 
-def build_chunks(docs: Iterable[Document]) -> List[Chunk]:
-    chunks: List[Chunk] = []
+def build_chunks(docs: Iterable[Document]) -> tuple[Tensor, list[Chunk]]:
+    logger.info(f"Mps is available: {torch.backends.mps.is_available()}")
+    logger.info(f"Mps is built: {torch.backends.mps.is_built()}")
+    chunks: list[Chunk] = []
     for doc in docs:
         for idx, (start, end, text) in enumerate(chunk_text(doc.text)):
-            chunks.append(
-                Chunk(
+            chunks.append(Chunk(
                     doc_id=doc.doc_id,
                     source=doc.source,
                     chunk_id=idx,
@@ -53,6 +61,9 @@ def build_chunks(docs: Iterable[Document]) -> List[Chunk]:
                     text=text,
                 )
             )
-    return chunks
+    logger.info(f"Going to process {len(chunks)} chunks")
+
+    embeddings = model.encode([chunk.text for chunk in chunks], normalize_embeddings=True, convert_to_tensor=True, show_progress_bar=True, batch_size=64)
+    return embeddings, chunks
 
 all_chunks = build_chunks(load_documents())
