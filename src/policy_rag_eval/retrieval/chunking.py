@@ -1,8 +1,8 @@
 import re
 from typing import Iterable, List
 
+from policy_rag_eval.retrieval.loaders import load_documents
 from policy_rag_eval.retrieval.model.types import Chunk, Document
-
 
 def chunk_text(text: str, max_chars: int = 800, overlap: int = 100) -> List[tuple[int, int, str]]:
     # Split on blank lines first for readability.
@@ -54,3 +54,5 @@ def build_chunks(docs: Iterable[Document]) -> List[Chunk]:
                 )
             )
     return chunks
+
+all_chunks = build_chunks(load_documents())

@@ -26,7 +26,8 @@ def load_documents() -> list[Document]:
         data = json.loads(file.read_text(encoding="utf-8"))
         docs = []
         for item in data:
-            qid = item.get("_id") or item.get("id") or "unknown"
+            print(item.keys())
+            qid = item.get("_id")
             context = item.get("context") or []
             for title, paragraphs in context:
                 if not isinstance(paragraphs, list):

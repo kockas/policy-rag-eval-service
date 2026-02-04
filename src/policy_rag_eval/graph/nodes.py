@@ -4,7 +4,7 @@ import re
 
 from policy_rag_eval.graph.state import GraphState
 from policy_rag_eval.llm.base import LLM
-from policy_rag_eval.retrieval import get_chunks, retrieve
+from policy_rag_eval.retrieval import all_chunks, retrieve
 
 logger = logging.getLogger(__name__)
 
@@ -13,8 +13,7 @@ def retrieve_node(state: GraphState) -> dict:
     Use the latest query (or the original question) to retrieve chunks.
     """
     query = state.queries[-1] if state.queries else state.question
-    chunks = get_chunks()
-    results = retrieve(chunks, query, state.top_k)
+    results = retrieve(all_chunks, query, state.top_k)
     docs = [r.chunk for r in results]
     logger.info("retrieve query=%r results=%d", query, len(docs))
     return {"docs": docs}
