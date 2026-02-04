@@ -8,12 +8,10 @@ from httpx import AsyncClient, ASGITransport
 
 from policy_rag_eval.main import app
 from policy_rag_eval.api.deps import get_llm
-from policy_rag_eval.retrieval.cache import clear_cache
 
 
 @pytest.fixture(autouse=True)
 def reset_singletons():
-    clear_cache()
     yield
 
 

@@ -9,7 +9,7 @@ with local datasets and LangGraph orchestration.
 - Simple keyword-overlap retrieval
 
 ## Tech Stack
-- Python 3.11+
+- Python 3.14+
 - FastAPI
 - Pydantic
 - pytest
@@ -22,15 +22,22 @@ with local datasets and LangGraph orchestration.
 * Syncing the whole project: `uv sync --dev`
 * Running the project: `uv run uvicorn policy_rag_eval.main:app --reload`
 * Running the tests: `uv run pytest`
+* Running the project in PyCharm
+  * uv run -> 
+    * module: `uvicorn`
+    * arguments: `policy_rag_eval.main:app --reload`
+    * environment: `OPENAI_API_KEY=...`
+* Test running system: `curl -s -X POST "http://127.0.0.1:8000/query" -H "Content-Type: application/json" -d '{"question":"<YOUR_QUESTION>","top_k":5}'`
+  * eg.: `curl -s -X POST "http://127.0.0.1:8000/query" -H "Content-Type: application/json" -d '{"question":"Who is Mickey Mouse?","top_k":5}'`
 
 ## Retrieval source
 By default, the service loads HotpotQA from:
 `data/raw/hotpotqa/hotpot_dev_distractor_v1.json`
-
 Override with env vars:
-* `POLICY_RAG_EVAL_HOTPOT_PATH=...`
-* `POLICY_RAG_EVAL_RETRIEVAL_TTL_SEC=...` (default: `900`, set to `0` for always-live)
-* `POLICY_RAG_EVAL_DATA_DIR=...` (fallback for local .txt/.md files when HotpotQA is not present)
+* `POLICY_RAG_EVAL_FILE=...` if not set, default to datasource above
+
+## Mandatory env vars:
+* `OPENAI_API_KEY=...` required when using OpenAI LLM
 
 ## Learning target
 This repo is intended for learning RAG + LangGraph using a local subset of HotpotQA.
