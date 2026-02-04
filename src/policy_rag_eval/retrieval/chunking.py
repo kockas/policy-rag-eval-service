@@ -47,8 +47,6 @@ def chunk_text(text: str, max_chars: int = 800, overlap: int = 100) -> List[tupl
 
 
 def build_chunks(docs: Iterable[Document]) -> tuple[Tensor, list[Chunk]]:
-    logger.info(f"Mps is available: {torch.backends.mps.is_available()}")
-    logger.info(f"Mps is built: {torch.backends.mps.is_built()}")
     chunks: list[Chunk] = []
     for doc in docs:
         for idx, (start, end, text) in enumerate(chunk_text(doc.text)):
@@ -62,7 +60,6 @@ def build_chunks(docs: Iterable[Document]) -> tuple[Tensor, list[Chunk]]:
                 )
             )
     logger.info(f"Going to process {len(chunks)} chunks")
-
     embeddings = model.encode([chunk.text for chunk in chunks], normalize_embeddings=True, convert_to_tensor=True, show_progress_bar=True, batch_size=64)
     return embeddings, chunks
 

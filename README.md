@@ -9,7 +9,7 @@ with local datasets and LangGraph orchestration.
 - Simple keyword-overlap retrieval
 
 ## Tech Stack
-- Python 3.14+
+- Python 3.13+
 - FastAPI
 - Pydantic
 - pytest
